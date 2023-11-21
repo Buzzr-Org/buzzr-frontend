@@ -1,23 +1,41 @@
+'use client'
 import React from 'react'
 import Link from 'next/link'
+import { useRouter,usePathname } from 'next/navigation'
 
-interface Props {
-  page?: string
-}
+const navLinks = [
+  {name: 'Home',link: '/dashboard'},
+  {name: 'My Buzzrs',link: '/dashboard/buzzrs'},
+  {name: 'Question Bank',link: '/dashboard/questions'},
+  {name: 'Leaderboard',link: '/dashboard/leaderboard'},
+  {name: 'Library',link: '/dashboard/library'},
+]
 
-const Sidenav = (props: Props) => {
+const Sidenav = () => {
+  const router = useRouter()
+  const pathname = usePathname()
 
-  const { page='' } = props
+  const handleLogout = () => {
+    window.localStorage.removeItem('user')
+    router.push('/')
+  }
 
   return (
     <div className='flex flex-col w-[16vw] h-[100%] bg-[#eee] rounded-md'>
       <div className='text-3xl font-semibold p-4 w-[100%] text-center'>Buzzr</div>        
-      <div className='flex flex-col items-center p-1 [&>*]:w-full'>
-        <Link className='text-center border border-[#222] rounded-md py-2 my-1' href='/dashboard'>Home</Link>
-        <Link className='text-center border border-[#222] rounded-md py-2 my-1' href='/dashboard'>Home</Link>
-        <Link className='text-center border border-[#222] rounded-md py-2 my-1' href='/dashboard'>Home</Link>
-        <Link className='text-center border border-[#222] rounded-md py-2 my-1' href='/dashboard'>Home</Link>
+      <div className='flex flex-col items-center p-1 mt-[40%] [&>*]:w-full'>
+        {navLinks.map((link, index) => {
+          const isActive = pathname.endsWith(link.link)
+          return (
+            <Link className={`text-center border border-[#888] rounded-md py-2 my-1 ${(isActive)?'bg-[#bbb]':'hover:bg-slate-300'}`} key={index} href={link.link}>
+              {link.name}
+            </Link>
+          
+          )
+        }
+        )}
       </div>
+      <button className='text-center bg-[#222] text-[#ddd] rounded-md py-2 mt-auto mb-[10%] w-[95%] self-center' onClick={handleLogout}>Logout</button>
     </div>
   )
 }
