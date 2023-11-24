@@ -14,13 +14,15 @@ export default function Home() {
         const token = User.token;
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         axios.get('/api/checkValidToken').then((res) => {
-          if(res.data.data.isValid) {
+          console.log(res)
+          if(res.data.success) {
             router.push('/dashboard')
           } else {
             window.localStorage.removeItem('user')
             router.push('/login')
           }
         }).catch((err) => {
+          console.log(err)
           window.localStorage.removeItem('user')
           router.push('/login')
         })

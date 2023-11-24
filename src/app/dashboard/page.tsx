@@ -1,5 +1,5 @@
 'use client'
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import axios from 'axios'
 axios.defaults.baseURL = 'http://localhost:4000'
 import { useRouter } from 'next/navigation'
@@ -21,7 +21,7 @@ const Page = () => {
 
     const [formData,setFormData] = useState({
         title: '',
-        questions: '5'
+        questions: 0
     })
     const [isDisabled,setDisabled] = useState(true)
 
@@ -33,11 +33,6 @@ const Page = () => {
                 [name]: value
             }
         });
-        if(formData.title.length > 0){
-            setDisabled(prev=>!prev)
-        }else{
-            setDisabled(prev=>!prev)
-        }
     }
 
     const handleQuesChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
@@ -49,6 +44,14 @@ const Page = () => {
             }
         })
     }
+
+    useEffect(() => {
+        if(formData.title.length>0 && formData.questions){
+            setDisabled(prev=>false)
+        }else{
+            setDisabled(prev=>true)
+        }
+    }, [formData])
 
     const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -99,7 +102,8 @@ const Page = () => {
                     <div className='text-3xl font-semibold p-4 w-[100%] text-center'>Create New Buzzr</div>
                     <form onSubmit={handleSubmit}  className='flex flex-col text-xl w-[80%] mx-auto [&>*]:mb-4 [&>*]:p-2 [&>*]:rounded-sm'>
                         <input className='' type="text" placeholder='Title' name='title' value={formData.title} onChange={handleTitleChange}/>
-                        <select name="questions" defaultValue='5' onChange={handleQuesChange}>
+                        <select name="questions" onChange={handleQuesChange}>
+                            <option value="" disabled selected>Number of questions</option>
                             <option value='5'>5</option>
                             <option value='10'>10</option>
                             <option value='15'>15</option>
