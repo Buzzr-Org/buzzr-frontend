@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios'
 axios.defaults.baseURL = 'http://localhost:4000';
@@ -53,7 +53,7 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-[#222] h-[100vh] flex flex-col justify-center items-center">
+    <>
       <form className="bg-[#eee] flex flex-col w-[65%] md:w-[35%] [&>input]:my-3 items-center p-[2rem] border rounded-lg" onSubmit={handleSubmit}>
         SIGN IN
         <input
@@ -77,7 +77,6 @@ export default function Home() {
             New User? <Link className='text-[#335] hover:text-[#444] mt-2' href='/signup'>Sign Up</Link>
         </div>
       </form>
-      <ToastContainer />
-    </div>
+    </>
   )
 }

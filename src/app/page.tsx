@@ -11,7 +11,19 @@ export default function Home() {
   useEffect(() => {
     const User = JSON.parse(window.localStorage.getItem('user') || '{}')
     if(User.token) {
-      router.push('/dashboard')
+        const token = User.token;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        axios.get('/api/checkValidToken').then((res) => {
+          if(res.data.data.isValid) {
+            router.push('/dashboard')
+          } else {
+            window.localStorage.removeItem('user')
+            router.push('/login')
+          }
+        }).catch((err) => {
+          window.localStorage.removeItem('user')
+          router.push('/login')
+        })
     }else{
       router.push('/login')
     }

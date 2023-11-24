@@ -7,7 +7,7 @@ const navLinks = [
   {name: 'Home',link: '/dashboard'},
   {name: 'My Buzzrs',link: '/dashboard/buzzrs'},
   {name: 'Question Bank',link: '/dashboard/questions'},
-  {name: 'Leaderboard',link: '/dashboard/leaderboard'},
+  {name: 'Leaderboards',link: '/dashboard/leaderboard'},
   {name: 'Library',link: '/dashboard/library'},
 ]
 
@@ -27,15 +27,14 @@ const Sidenav = () => {
         {navLinks.map((link, index) => {
           const isActive = pathname.endsWith(link.link)
           return (
-            <Link className={`text-center border border-[#888] rounded-md py-2 my-1 ${(isActive)?'bg-[#bbb]':'hover:bg-slate-300'}`} key={index} href={link.link}>
+            <Link className={`text-center shadow-md border-[#cba5d2] rounded-md py-2 my-1 ${(isActive)?'bg-[#8f6c95] text-white':'hover:bg-slate-300'}`} key={index} href={link.link}>
               {link.name}
             </Link>
-          
           )
         }
         )}
       </div>
-      <button className='text-center bg-[#222] text-[#ddd] rounded-md py-2 mt-auto mb-[10%] w-[95%] self-center' onClick={handleLogout}>Logout</button>
+      <button className='text-center bg-[#222] shadow-md text-[#ddd] rounded-md py-2 mt-auto mb-[10%] w-[95%] self-center' onClick={handleLogout}>Logout</button>
     </div>
   )
 }
