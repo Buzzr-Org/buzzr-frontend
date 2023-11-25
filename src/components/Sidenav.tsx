@@ -21,7 +21,7 @@ const Sidenav = () => {
   }
 
   return (
-    <div className='flex flex-col w-[16vw] h-[100%] bg-[#eee] rounded-md'>
+    <div className='flex flex-col w-[16vw] min-h-[98vh] bg-[#eee] rounded-md'>
       <div className='text-3xl font-semibold p-4 w-[100%] text-center'>Buzzr</div>        
       <div className='flex flex-col items-center p-1 mt-[40%] [&>*]:w-full'>
         {navLinks.map((link, index) => {
