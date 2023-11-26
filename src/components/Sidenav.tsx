@@ -5,7 +5,6 @@ import { useRouter,usePathname } from 'next/navigation'
 
 const navLinks = [
   {name: 'Home',link: '/dashboard'},
-  {name: 'My Buzzrs',link: '/dashboard/buzzrs'},
   {name: 'Question Bank',link: '/dashboard/questions'},
   {name: 'Leaderboards',link: '/dashboard/leaderboard'},
   {name: 'Library',link: '/dashboard/library'},
@@ -17,7 +16,7 @@ const Sidenav = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem('user')
-    router.push('/')
+    router.push('/login')
   }
 
   return (

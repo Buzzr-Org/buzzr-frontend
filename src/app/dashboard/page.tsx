@@ -2,6 +2,7 @@
 import React, { useEffect, useState ,useRef} from "react";
 import axios from "axios";
 import Image from "next/image";
+import Link from "next/link";
 import { BASE_URL } from "@/utils/constants";
 axios.defaults.baseURL = BASE_URL;
 import { useRouter } from "next/navigation";
@@ -25,29 +26,32 @@ const Page = () => {
   }
 
   const [buzzs,addBuzzr] = useState<Array<Buzzr>>([]);
-  const countRef = useRef(0);
 
   useEffect(() => {
-    const user = JSON.parse(window.localStorage.getItem("user") || "{}");
-    axios.get("/api/myquizzes",{
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    }).then((res) => {
-      console.log(res);
-      const buzzrs = res.data.data.quizzes;
-      buzzrs.forEach((buzzr: any) => {
-          addBuzzr(buzzs=>[...buzzs,{
-            _id: buzzr._id,
-            title: buzzr.title,
-            maxQuestions: buzzr.maxQuestions,
-            questions: buzzr.questions,
-          }]);
+    if(typeof window!=='undefined'){
+      const user = JSON.parse(window.localStorage.getItem("user") || "{}");
+      axios.get("/api/myquizzes",{
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }).then((res) => {
+        // console.log(res);
+        const buzzrs = res.data.data.quizzes;
+        buzzrs.forEach((buzzr: any) => {
+            addBuzzr(buzzs=>[...buzzs,{
+              _id: buzzr._id,
+              title: buzzr.title,
+              maxQuestions: buzzr.maxQuestions,
+              questions: buzzr.questions,
+            }]);
+        });
+      }).catch((err) => {
+        window.localStorage.removeItem("user");
+        router.push("/login");
+        console.log(err);
       });
-    }).catch((err) => {
-      console.log(err);
-    });
-  },[countRef]);
+    }
+  },[]);
 
   const router = useRouter();
 
@@ -97,7 +101,7 @@ const Page = () => {
           },
         }
       );
-      console.log(res);
+      // console.log(res);
       toast.success(`${res.data.message}`, {
         position: "top-center",
         autoClose: 3000,
@@ -107,12 +111,12 @@ const Page = () => {
         progress: undefined,
       });
       setLoading(false);
-      addBuzzr([...buzzs,{
+      addBuzzr([{
           _id: res.data.data.quiz._id,
           title: formData.title,
           maxQuestions: formData.questions,
           questions: [],
-      }]);
+      },...buzzs]);
     } catch (err: any) {
       console.log(err);
       if (err.response?.status == 401) {
@@ -189,9 +193,10 @@ const Page = () => {
           <div className="flex flex-col items-center p-1 [&>*]:w-[95%] h-auto max-h-[75%] overflow-y-scroll">
             {buzzs.map((buzzr, index) => {
               return (
-                <div
+                <Link
                   className="flex justify-start [&>*]:mr-[5%] [&>*]:ml-[2%] text-white text-xl rounded-md py-3 my-1 bg-[#b387ba]"
                   key={index}
+                  href={`/dashboard/buzzr/${buzzr._id}`} 
                 >
                   <div>{buzzr.title}</div>
                   <div>
@@ -200,7 +205,7 @@ const Page = () => {
                   <div>
                     Questions: {buzzr.questions.length}
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
