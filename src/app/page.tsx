@@ -27,8 +27,10 @@ export default function Home() {
         })
         .catch((err) => {
           console.log(err);
-          window.localStorage.removeItem("user");
-          router.push("/login");
+          if(err.response?.status == 401){
+            window.localStorage.removeItem("user");
+            router.push("/login");
+          }
         });
     } else {
       router.push("/login");

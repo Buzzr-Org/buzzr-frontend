@@ -4,13 +4,13 @@ import {
     ModalOverlay,
     ModalContent,
     ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
     useDisclosure
 } from '@chakra-ui/react'
 
 interface Props {
+    title: string,
     buttonText: string,
     buttonColor: string,
     children: React.ReactNode
@@ -22,22 +22,15 @@ const ModalContainer = (props:Props) => {
 
     return (
         <>
-          <button className={`bg-[${props.buttonColor}] py-2 px-4 text-white rounded-md m-2 ml-6`} onClick={onOpen}>{props.buttonText}</button>
-    
+          <button className={`bg-[${props.buttonColor}] py-2 px-4 text-white rounded-md m-2`} onClick={onOpen}>{props.buttonText}</button>
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Modal Title</ModalHeader>
+              <ModalHeader>{props.title}</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 {props.children}
               </ModalBody>
-    
-              <ModalFooter>
-                <button onClick={onClose}>
-                  Create
-                </button>
-              </ModalFooter>
             </ModalContent>
           </Modal>
         </>

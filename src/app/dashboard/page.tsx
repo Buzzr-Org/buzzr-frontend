@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState ,useRef} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,6 +7,8 @@ import { BASE_URL } from "@/utils/constants";
 axios.defaults.baseURL = BASE_URL;
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useBuzzrStore } from "@/store/Buzzr";
+import DeleteBuzzrModal from "@/components/DeleteBuzzrModal";
 
 const Container = ({ children }: { children: React.ReactElement }) => {
   return (
@@ -25,7 +27,10 @@ const Page = () => {
     questions: any[];
   }
 
-  const [buzzs,addBuzzr] = useState<Array<Buzzr>>([]);
+  const {buzzrs,addBuzzr,setBuzzrs,removeAllBuzzrs} = useBuzzrStore();
+  const [loading, setLoading] = useState(false);
+  const [contLoading, setContLoading] = useState(true);
+  const [deleteClick, setDeleteClick] = useState(false);
 
   useEffect(() => {
     if(typeof window!=='undefined'){
@@ -36,18 +41,16 @@ const Page = () => {
         },
       }).then((res) => {
         // console.log(res);
+        setContLoading(false);
+        removeAllBuzzrs();
         const buzzrs = res.data.data.quizzes;
-        buzzrs.forEach((buzzr: any) => {
-            addBuzzr(buzzs=>[...buzzs,{
-              _id: buzzr._id,
-              title: buzzr.title,
-              maxQuestions: buzzr.maxQuestions,
-              questions: buzzr.questions,
-            }]);
-        });
+        setBuzzrs(buzzrs);
       }).catch((err) => {
-        window.localStorage.removeItem("user");
-        router.push("/login");
+        if(err.response?.status == 401){
+          window.localStorage.removeItem("user");
+          router.push("/login");
+        }
+        setContLoading(false);
         console.log(err);
       });
     }
@@ -59,7 +62,6 @@ const Page = () => {
     title: "",
     questions: 0,
   });
-  const [loading, setLoading] = useState(false);
 
   const handleTitleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -111,12 +113,7 @@ const Page = () => {
         progress: undefined,
       });
       setLoading(false);
-      addBuzzr([{
-          _id: res.data.data.quiz._id,
-          title: formData.title,
-          maxQuestions: formData.questions,
-          questions: [],
-      },...buzzs]);
+      addBuzzr(res.data.data.quiz);
     } catch (err: any) {
       console.log(err);
       if (err.response?.status == 401) {
@@ -135,6 +132,10 @@ const Page = () => {
       setLoading(false);
     }
   };
+
+  const handleLinkClick = (id:string) => {
+    router.push(`/dashboard/buzzr/${id}`);
+  }
 
   return (
     <>
@@ -190,13 +191,18 @@ const Page = () => {
           <div className="text-3xl font-semibold p-4 w-[100%] text-center">
             My Buzzrs
           </div>
+          {(contLoading)?
+          <div className="text-3xl font-semibold p-4 w-[100%] text-center">
+            Loading...
+          </div>:
           <div className="flex flex-col items-center p-1 [&>*]:w-[95%] h-auto max-h-[75%] overflow-y-scroll">
-            {buzzs.map((buzzr, index) => {
+            {buzzrs.map((buzzr, index) => {
               return (
-                <Link
-                  className="flex justify-start [&>*]:mr-[5%] [&>*]:ml-[2%] text-white text-xl rounded-md py-3 my-1 bg-[#b387ba]"
+                <div
+                  className="flex justify-start [&>*]:flex [&>*]:items-center gap-4 p-2 text-white text-xl rounded-md py-3 my-1 bg-[#b387ba] hover:bg-[#8f6c95] hover:cursor-pointer"
                   key={index}
-                  href={`/dashboard/buzzr/${buzzr._id}`} 
+                  // href={`/dashboard/buzzr/${buzzr._id}`}
+                  onClick={()=>handleLinkClick(buzzr._id)}
                 >
                   <div>{buzzr.title}</div>
                   <div>
@@ -205,10 +211,13 @@ const Page = () => {
                   <div>
                     Questions: {buzzr.questions.length}
                   </div>
-                </Link>
+                  <div className="ml-auto">
+                  <DeleteBuzzrModal id={buzzr._id} />
+                  </div>
+                </div>
               );
             })}
-          </div>
+          </div>}
           </>
         </Container>
       </div>

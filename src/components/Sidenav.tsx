@@ -1,7 +1,8 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
-import { useRouter,usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import LogoutModal from './LogoutModal'
 
 const navLinks = [
   {name: 'Home',link: '/dashboard'},
@@ -11,13 +12,7 @@ const navLinks = [
 ]
 
 const Sidenav = () => {
-  const router = useRouter()
   const pathname = usePathname()
-
-  const handleLogout = () => {
-    window.localStorage.removeItem('user')
-    router.push('/login')
-  }
 
   return (
     <div className='flex flex-col w-[16vw] min-h-[98vh] bg-[#eee] rounded-md'>
@@ -33,7 +28,7 @@ const Sidenav = () => {
         }
         )}
       </div>
-      <button className='text-center bg-[#222] shadow-md text-[#ddd] rounded-md py-2 mt-auto mb-[10%] w-[95%] self-center' onClick={handleLogout}>Logout</button>
+      <LogoutModal/>
     </div>
   )
 }
