@@ -30,7 +30,6 @@ const Page = () => {
   const {buzzrs,addBuzzr,setBuzzrs,removeAllBuzzrs} = useBuzzrStore();
   const [loading, setLoading] = useState(false);
   const [contLoading, setContLoading] = useState(true);
-  const [deleteClick, setDeleteClick] = useState(false);
 
   useEffect(() => {
     if(typeof window!=='undefined'){
@@ -38,11 +37,12 @@ const Page = () => {
       axios.get("/api/myquizzes",{
         headers: {
           Authorization: `Bearer ${user.token}`,
+          "ngrok-skip-browser-warning":"any",
         },
       }).then((res) => {
-        // console.log(res);
         setContLoading(false);
         removeAllBuzzrs();
+        console.log(res.data)
         const buzzrs = res.data.data.quizzes;
         setBuzzrs(buzzrs);
       }).catch((err) => {
@@ -51,6 +51,14 @@ const Page = () => {
           router.push("/login");
         }
         setContLoading(false);
+        toast.error(`${err.response?.data.message || err.message} `, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
         console.log(err);
       });
     }

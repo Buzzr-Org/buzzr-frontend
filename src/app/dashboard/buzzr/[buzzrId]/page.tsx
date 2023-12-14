@@ -5,8 +5,10 @@ import { BASE_URL } from '@/utils/constants'
 axios.defaults.baseURL = BASE_URL
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
+import AddQuesModal from '@/components/AddQuesModal'
 
 interface Question {
+    question: {
     _id: string;
     text: string;
     options: Array<{
@@ -17,6 +19,9 @@ interface Question {
         link: string | null,
         type: string
     }
+    },
+    time: number,
+    points: number
 }
 
 interface Buzzr {
@@ -79,20 +84,16 @@ const page = ({params}:{
               </div>
           ) : (
               <>
-                <h1 className='text-2xl font-bold'>{buzzr.title}</h1>
-                <h2 className='text-xl font-semibold'>{buzzr.maxQuestions} Questions</h2>
+                <h1 className='text-3xl font-bold text-center py-4'>{buzzr.title}</h1>
+                <div className='text-2xl font-semibold flex justify-around'>
+                    <div>Max Questions: {buzzr.maxQuestions}</div>
+                    <div>Total Questions: {buzzr.questions.length}</div>
+                </div>
+                <AddQuesModal quizId={buzzr._id} />
                 <div className='mt-5'>
                     {buzzr.questions.map((question, index) => (
-                        <div key={question._id} className='border-2 border-gray-900 rounded-lg p-5 mb-5'>
-                            <h3 className='text-lg font-semibold'>{index+1}. {question.text}</h3>
-                            <div className='mt-5'>
-                                {question.options.map((option, index) => (
-                                    <div key={index} className='flex items-center'>
-                                        <input type="radio" name={`${question._id}`} id={`${question._id}-${index}`} />
-                                        <label htmlFor={`${question._id}-${index}`} className='ml-2'>{option.option}</label>
-                                    </div>
-                                ))}
-                            </div>
+                        <div key={question.question._id} className='border-2 border-gray-900 rounded-lg p-5 mb-5'>
+                            <h3 className='text-lg font-semibold'>{index+1}. {question.question.text}</h3>
                         </div>
                     ))}
                 </div>

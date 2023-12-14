@@ -36,7 +36,8 @@ const page = () => {
       const user = JSON.parse(window.localStorage.getItem('user') || '{}')
       axios.get('/api/myquestions', {
         headers: {
-          Authorization: `Bearer ${user.token}`
+          Authorization: `Bearer ${user.token}`,
+          "ngrok-skip-browser-warning":"any"
         }
       }).then((res:any) => {
         // console.log(res)
